@@ -8,4 +8,5 @@ Route::middleware('auth:sanctum')->group(function () {
     return $request->user();
   });
   Route::get('/transactions', [TransactionController::class, 'index']);
+  Route::post('/transactions', [TransactionController::class, 'store']);
 });
