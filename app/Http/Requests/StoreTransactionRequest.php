@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTransactionRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreTransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user() != null;
     }
 
     /**
@@ -21,8 +22,18 @@ class StoreTransactionRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+      return [
+        'receiver_id' => [
+          'required',
+          'integer',
+          Rule::exists('users', 'id'),
+          function ($attribute, $value, $fail) {
+            if ($this->user() && $this->user()->id == (int)$value) {
+              $fail('You cannot send money to yourself.');
+            }
+          },
+        ],
+        'amount' => ['required', 'numeric', 'min:0.01'],
+      ];
     }
 }
