@@ -13,10 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-      $middleware->alias([
-        'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        'auth' => \App\Http\Middleware\Authenticate::class,
-      ]);
+        $middleware->alias([
+            'auth' => \App\Http\Middleware\Authenticate::class,
+            'sanctum.auth' => \App\Http\Middleware\SanctumAuth::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

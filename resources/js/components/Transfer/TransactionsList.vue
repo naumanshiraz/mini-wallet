@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-xl font-semibold text-blue-800">Your Balance: <span class="text-green-600">{{ balanceDisplay }}</span></h3>
       <button @click="fetchTransactions"
-              class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-lg shadow text-sm">
+        class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-4 rounded-lg shadow text-sm">
         Refresh
       </button>
     </div>
@@ -76,15 +76,15 @@ onMounted(() => {
 
   if (window.Echo && props.currentUserId) {
     window.Echo.private(`user.${props.currentUserId}`)
-        .listen('.MoneyTransferred', (e) => {
-          if (!e || !e.transaction) return;
-          const tx = e.transaction;
-          if (tx.sender_id === props.currentUserId) balance.value = e.sender.balance;
-          if (tx.receiver_id === props.currentUserId) balance.value = e.receiver.balance;
-          if (transactions.value && transactions.value.data) {
-            transactions.value.data.unshift(tx);
-          }
-        });
+      .listen('.MoneyTransferred', (e) => {
+        if (!e || !e.transaction) return;
+        const tx = e.transaction;
+        if (tx.sender_id === props.currentUserId) balance.value = e.sender.balance;
+        if (tx.receiver_id === props.currentUserId) balance.value = e.receiver.balance;
+        if (transactions.value && transactions.value.data) {
+          transactions.value.data.unshift(tx);
+        }
+      });
   }
 });
 

@@ -15,7 +15,15 @@ class TransactionController extends Controller
 {
   public function index(Request $request)
   {
-    $user = $request->user();
+    $token = $request->bearerToken();
+    $sanctumToken = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+
+    if (!$sanctumToken) {
+      return response()->json(['message' => 'Unauthenticated'], 401);
+    }
+
+    $user = $sanctumToken->tokenable;
+    auth()->setUser($user);
 
     $transactions = Transaction::where('sender_id', $user->id)
       ->orWhere('receiver_id', $user->id)

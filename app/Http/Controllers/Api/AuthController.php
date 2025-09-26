@@ -50,7 +50,14 @@ class AuthController extends Controller
 
   public function logout(Request $request)
   {
-    $request->user()->currentAccessToken()->delete();
+    $user = auth()->guard('sanctum')->user();
+
+    if (!$user) {
+      return response()->json(['message' => 'No authenticated user found'], 401);
+    }
+
+    auth()->logout();
+
     return response()->json(['message' => 'Logged out']);
   }
 }
