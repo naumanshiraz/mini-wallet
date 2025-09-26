@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\MoneyTransferred;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreTransactionRequest;
@@ -85,6 +86,8 @@ class TransactionController extends Controller
       ]);
 
       DB::commit();
+
+      broadcast(new MoneyTransferred($tx, $sender, $receiver));
 
       return response()->json([
         'message' => 'Transfer successful.',
