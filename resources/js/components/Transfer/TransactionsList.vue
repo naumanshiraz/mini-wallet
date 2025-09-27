@@ -84,7 +84,7 @@ onMounted(() => {
         const tx = e.transaction;
         tx.sender = e.sender;
         tx.receiver = e.receiver;
-        
+
         if (tx.sender_id === props.currentUserId) balance.value = e.sender.balance;
         if (tx.receiver_id === props.currentUserId) balance.value = e.receiver.balance;
         if (transactions.value && transactions.value.data) {
