@@ -12,7 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MoneyTransferred
+class MoneyTransferred implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -37,6 +37,17 @@ class MoneyTransferred
      */
     public function broadcastOn(): array
     {
+      \Log::info('Broadcasting MoneyTransferred event', [
+        'sender_id' => $this->sender->id,
+        'receiver_id' => $this->receiver->id,
+        'sender' => $this->sender,
+        'receiver' => $this->receiver,
+        'channels' => [
+          'user.' . $this->sender->id,
+          'user.' . $this->receiver->id
+        ]
+      ]);
+
       return [
         new PrivateChannel('user.' . $this->sender->id),
         new PrivateChannel('user.' . $this->receiver->id),
@@ -50,10 +61,12 @@ class MoneyTransferred
         'sender' => [
           'id' => $this->sender->id,
           'balance' => $this->sender->balance,
+          'name' => $this->sender->name
         ],
         'receiver' => [
           'id' => $this->receiver->id,
           'balance' => $this->receiver->balance,
+          'name' => $this->receiver->name
         ],
       ];
     }

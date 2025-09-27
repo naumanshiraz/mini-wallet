@@ -75,10 +75,16 @@ onMounted(() => {
   fetchTransactions();
 
   if (window.Echo && props.currentUserId) {
+    console.log(`Attempting to listen to private channel: user.${props.currentUserId}`);
+
     window.Echo.private(`user.${props.currentUserId}`)
       .listen('.MoneyTransferred', (e) => {
+        console.log('MoneyTransferred event received:', e);
         if (!e || !e.transaction) return;
         const tx = e.transaction;
+        tx.sender = e.sender;
+        tx.receiver = e.receiver;
+        
         if (tx.sender_id === props.currentUserId) balance.value = e.sender.balance;
         if (tx.receiver_id === props.currentUserId) balance.value = e.receiver.balance;
         if (transactions.value && transactions.value.data) {
